@@ -1,3 +1,3 @@
-module github.com/AfdikoMayte/SIM-SerTa
+module github.com/afdikomayte/sim-layanan-sertifikat-tanah
 
 go 1.21.0
