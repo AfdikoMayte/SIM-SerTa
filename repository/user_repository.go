@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type User interface {
+type UserRepository interface {
 	Save(ctx context.Context, tx *sql.Tx, user domain.User) *domain.User
 	Update(ctx context.Context, tx *sql.Tx, user domain.User) *domain.User
 	Delete(ctx context.Context, tx *sql.Tx, userId uuid.UUID)

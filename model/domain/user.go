@@ -4,7 +4,7 @@ import "github.com/google/uuid"
 
 type User struct {
 	Id       uuid.UUID
-	Nik      int
+	Nik      string
 	Nama     string
 	Password string
 }

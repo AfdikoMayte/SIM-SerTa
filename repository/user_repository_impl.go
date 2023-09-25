@@ -10,9 +10,10 @@ import (
 	"github.com/google/uuid"
 )
 
-type UserImpl struct{}
+type UserRepositoryImpl struct {
+}
 
-func (u *UserImpl) Save(ctx context.Context, tx *sql.Tx, user domain.User) *domain.User {
+func (u *UserRepositoryImpl) Save(ctx context.Context, tx *sql.Tx, user domain.User) *domain.User {
 	//script sql untuk memasukan data ke database
 	SQL := "insert into user(id,nik,nama,password) values(?,?,?,?)"
 
@@ -26,10 +27,9 @@ func (u *UserImpl) Save(ctx context.Context, tx *sql.Tx, user domain.User) *doma
 	defer stmt.Close()
 
 	return &user
-
 }
 
-func (u *UserImpl) Update(ctx context.Context, tx *sql.DB, user domain.User) *domain.User {
+func (u *UserRepositoryImpl) Update(ctx context.Context, tx *sql.DB, user domain.User) *domain.User {
 
 	//prepare contex -> execContex
 	SQL := "update user set nama = ?, password=? where id = ?"
@@ -41,10 +41,9 @@ func (u *UserImpl) Update(ctx context.Context, tx *sql.DB, user domain.User) *do
 
 	//return
 	return &user
-
 }
 
-func (u *UserImpl) Delete(ctx context.Context, tx *sql.Tx, userId uuid.UUID) {
+func (u *UserRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx, userId uuid.UUID) {
 	//prepare content -> execContex
 	SQL := "update user set delete_at = now() where id = ?"
 	stmt, err := tx.PrepareContext(ctx, SQL)
@@ -53,10 +52,9 @@ func (u *UserImpl) Delete(ctx context.Context, tx *sql.Tx, userId uuid.UUID) {
 	_, err = stmt.ExecContext(ctx, userId)
 	helper.PanicIfError(err)
 	defer stmt.Close()
-
 }
 
-func (u *UserImpl) FindById(ctx context.Context, tx *sql.Tx, userId uuid.UUID) (*domain.User, error) {
+func (u *UserRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, userId uuid.UUID) (*domain.User, error) {
 	//prepare content -> QueryContex
 	SQl := "select nik, nama from user where id = ? and deleted_at is null limit 1"
 	stmt, err := tx.PrepareContext(ctx, SQl)
@@ -77,7 +75,7 @@ func (u *UserImpl) FindById(ctx context.Context, tx *sql.Tx, userId uuid.UUID) (
 	}
 }
 
-func (u *UserImpl) FindAll(ctx context.Context, tx *sql.Tx) *[]domain.User {
+func (u *UserRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx) *[]domain.User {
 	// prepareContex -> queryContex
 	SQL := "select nik,nama from user where delete_at is null"
 	stmt, err := tx.PrepareContext(ctx, SQL)
