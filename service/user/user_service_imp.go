@@ -7,17 +7,23 @@ import (
 	"github.com/afdikomayte/sim-layanan-sertifikat-tanah/model/domain"
 	"github.com/afdikomayte/sim-layanan-sertifikat-tanah/model/web"
 	repository "github.com/afdikomayte/sim-layanan-sertifikat-tanah/repository/user"
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 )
 
 type UserServiceImpl struct {
 	UserRepository repository.UserRepository
 	DB             *sql.DB
+	validator.Validate
 }
 
 func (u *UserServiceImpl) Save(ctx context.Context, tx *sql.Tx, request web.UserRequest) web.UserResponse {
-	tx, err := u.DB.Begin()
+	//validation
+	err := u.Validate.Struct(request)
 	helper.PanicIfError(err)
+
+	tx, errTx := u.DB.Begin()
+	helper.PanicIfError(errTx)
 	// handel transaction rollback jika ada err saat insert data
 	defer helper.CommitOrRollback(tx)
 
@@ -35,9 +41,13 @@ func (u *UserServiceImpl) Save(ctx context.Context, tx *sql.Tx, request web.User
 
 }
 
-func (u *UserServiceImpl) Update(ctx context.Context, tx *sql.Tx, request web.UserRequest) web.UserResponse {
-	tx, err := u.DB.Begin()
+func (u *UserServiceImpl) Update(ctx context.Context, tx *sql.Tx, request web.UserUpdateRequest) web.UserResponse {
+	//validation
+	err := u.Validate.Struct(request)
 	helper.PanicIfError(err)
+
+	tx, errTx := u.DB.Begin()
+	helper.PanicIfError(errTx)
 	defer helper.CommitOrRollback(tx)
 
 	//find user to update

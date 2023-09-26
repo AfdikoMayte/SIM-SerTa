@@ -1,5 +1,7 @@
 package main
 
-func main() {
-
-}
+//func main() {
+//	db := database.ConnectDB()
+//	validate := validator.New()
+//
+//}
